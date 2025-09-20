@@ -9,8 +9,7 @@
 ```bash
 git clone "https://github.com/Phobia812/GroupPortal.git"
 ```
-### 2. Встановлення Django
+### 2. Встановлення бібліотек
 ```bash
-pip install django
-pip install dotenv
+pip install -r requirements.txt
 ```
