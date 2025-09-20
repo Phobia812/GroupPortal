@@ -12,4 +12,5 @@ git clone "https://github.com/Phobia812/GroupPortal.git"
 ### 2. Встановлення Django
 ```bash
 pip install django
+pip install dotenv
 ```
