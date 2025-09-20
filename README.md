@@ -6,7 +6,10 @@
 
 ### 1. Клонування репозиторію
 Спочатку склонуйте репозиторій у свою папку:
+```bash
 git clone "https://github.com/Phobia812/GroupPortal.git"
-
+```
 ### 2. Встановлення Django
+```bash
 pip install django
+```
