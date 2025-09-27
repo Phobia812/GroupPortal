@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Електронний щоденник</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'blue-custom': '#1e40af',
+                        'blue-light': '#3b82f6',
+                        'blue-lighter': '#dbeafe'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen p-4 flex justify-center">
+
+<div class="w-full max-w-5xl bg-white p-6 rounded-2xl shadow-lg border border-blue-lighter">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Електронний щоденник</h1>
+
+    <table class="w-full border-collapse border border-gray-200">
+        <thead class="bg-blue-lighter">
+            <tr>
+                <th class="border px-4 py-2 text-left">Учень</th>
+                <th class="border px-4 py-2 text-left">Предмет</th>
+                <th class="border px-4 py-2 text-left">Оцінка</th>
+                <th class="border px-4 py-2 text-left">Деталі</th>
+                <th class="border px-4 py-2 text-left">Дата</th>
+                {% if user.is_admin or user.is_moderator %}
+                    <th class="border px-4 py-2 text-left">Дії</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr class="hover:bg-blue-50 transition-colors">
+                <td class="border px-4 py-2">{{ grade.student.first_name }} {{ grade.student.last_name }}</td>
+                <td class="border px-4 py-2">{{ grade.subject.name }}</td>
+                <td class="border px-4 py-2">{{ grade.grade }}</td>
+                <td class="border px-4 py-2">{{ grade.detail }}</td>
+                <td class="border px-4 py-2">{{ grade.date }}</td>
+                {% if user.is_admin or user.is_moderator %}
+                    <td class="border px-4 py-2 space-x-2">
+                        <a href="{% url 'grade_update' grade.id %}" class="text-blue-custom hover:underline">Редагувати</a>
+                        <a href="{% url 'grade_delete' grade.id %}" class="text-red-600 hover:underline">Видалити</a>
+                    </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="border px-4 py-4 text-center text-gray-500">Немає оцінок</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if user.is_admin or user.is_moderator %}
+        <a href="{% url 'grade_add' %}" 
+           class="mt-4 inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold">
+            Додати оцінку
+        </a>
+    {% endif %}
+</div>
+</body>
+</html>

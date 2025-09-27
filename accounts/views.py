@@ -61,15 +61,20 @@ def register_view(request):
         if form.is_valid() and profile_form.is_valid():
             user = form.save(commit=False)
             user.save()
-            
+
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.save()
-            
+
+            user.first_name = profile.first_name
+            user.last_name = profile.last_name
+            user.save()
+
             send_verification_email(request, user)
-            
+
             messages.success(request, "Перевірте ваш email для активації акаунта!")
             return redirect('login')
+
         else:
             for field, errors in form.errors.items():
                 for error in errors:
