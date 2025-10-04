@@ -1,3 +1,8 @@
+from django.http import HttpResponse
 from django.urls import path
 
-urlpatterns = []
+app_name = "materials"
+
+urlpatterns = [
+    path('', lambda request: HttpResponse("Заглушка"), name='index'),
+]

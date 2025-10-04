@@ -5,15 +5,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('', include('home.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('announcements/', include('announcements.urls')),
-    path('diary/', include('diary.urls')),
-    path('events/', include('events.urls')),
-    path('forum/', include('forum.urls')),
-    path('materials/', include('materials.urls')),
-    path('polls/', include('polls.urls')),
+    path('', include('home.urls', namespace='home')),
+    path('', include('accounts.urls', namespace='accounts')),
+    path('announcements/', include('announcements.urls', namespace='announcements')),
+    path('diary/', include('diary.urls', namespace='diary')),
+    path('events/', include('events.urls', namespace='events')),
+    path('forum/', include('forum.urls', namespace='forum')),
+    path('materials/', include('materials.urls', namespace='materials')),
+    path('polls/', include('polls.urls', namespace='polls')),
 ]
 
 if settings.DEBUG:

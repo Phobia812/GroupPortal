@@ -1,19 +1,19 @@
 import os
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth import login, logout, get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.views import View
+from django.views.generic import FormView
 from django.template.loader import render_to_string
+from django.urls import reverse, reverse_lazy
 from django.core.mail import send_mail
-from django.urls import reverse
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib import messages
-from .forms import CustomUserCreationForm, CustomUserChangeForm, UserProfileForm, AdminUserForm
-from .models import CustomUser, UserProfile
-
-def admin_required(view_func):
-    return user_passes_test(lambda u: u.is_authenticated and u.is_admin())(view_func)
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from .forms import CustomUserCreationForm, UserProfileForm
+from .models import CustomUser
 
 def send_verification_email(request, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -36,28 +36,39 @@ def send_verification_email(request, user):
         fail_silently=False,
     )
 
-def activate_view(request, uidb64, token):
-    User = get_user_model()
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
+class ActivateView(View):
+    def get(self, request, uidb64, token):
+        User = get_user_model()
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
 
-    if user is not None and default_token_generator.check_token(user, token):
-        user.email_verified = True
-        user.save()
-        messages.success(request, "Акаунт успішно активовано! Тепер можете увійти.")
-        return redirect('login')
-    else:
-        messages.error(request, "Посилання недійсне або прострочене.")
-        return redirect('login')
+        if user is not None and default_token_generator.check_token(user, token):
+            user.email_verified = True
+            user.save()
+            messages.success(request, "Акаунт успішно активовано! Тепер можете увійти.")
+            return redirect('accounts:login')
+        else:
+            messages.error(request, "Посилання недійсне або прострочене.")
+            return redirect('accounts:login')
 
-def register_view(request):
-    if request.method == 'POST':
+class RegisterView(FormView):
+    template_name = "accounts/register.html"
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy("login")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if "profile_form" not in context:
+            context["profile_form"] = UserProfileForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
         form = CustomUserCreationForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES)
-        
+
         if form.is_valid() and profile_form.is_valid():
             user = form.save(commit=False)
             user.save()
@@ -71,30 +82,27 @@ def register_view(request):
             user.save()
 
             send_verification_email(request, user)
-
             messages.success(request, "Перевірте ваш email для активації акаунта!")
-            return redirect('login')
+            return redirect("accounts:login")
 
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{form.fields[field].label if field in form.fields else field}: {error}")
-            for field, errors in profile_form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{profile_form.fields[field].label if field in profile_form.fields else field}: {error}")
-    else:
-        form = CustomUserCreationForm()
-        profile_form = UserProfileForm()
-    
-    return render(request, 'accounts/register.html', {
-        'form': form, 
-        'profile_form': profile_form
-    })
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(request, f"{form.fields[field].label if field in form.fields else field}: {error}")
+        for field, errors in profile_form.errors.items():
+            for error in errors:
+                messages.error(request, f"{profile_form.fields[field].label if field in profile_form.fields else field}: {error}")
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
+        return render(request, self.template_name, {"form": form, "profile_form": profile_form})
+
+class LoginView(View):
+    template_name = "accounts/login.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        username = request.POST.get("username", "")
+        password = request.POST.get("password", "")
 
         try:
             user = CustomUser.objects.get(username=username)
@@ -109,11 +117,11 @@ def login_view(request):
             else:
                 login(request, user)
                 messages.success(request, f"Ласкаво просимо, {user.username}!")
-                return redirect('home')
+                return redirect("home:home")
         else:
             messages.error(request, "Невірний логін або пароль")
 
-    return render(request, 'accounts/login.html')
+        return render(request, self.template_name)
 
 @login_required
 def logout_view(request):
@@ -121,4 +129,34 @@ def logout_view(request):
     list(messages.get_messages(request))
     logout(request)
     messages.success(request, f"До побачення, {username}!")
-    return redirect('login')
+    return redirect('accounts:login')
+
+class ProfileView(LoginRequiredMixin, View):
+    template_name = "accounts/profile.html"
+
+    def get(self, request):
+        profile_form = UserProfileForm(instance=request.user.profile)
+        return render(request, self.template_name, {"profile_form": profile_form})
+
+    def post(self, request):
+        profile_form = UserProfileForm(
+            request.POST,
+            request.FILES,
+            instance=request.user.profile
+        )
+
+        if profile_form.is_valid():
+            profile = profile_form.save()
+
+            request.user.first_name = profile.first_name
+            request.user.last_name = profile.last_name
+            request.user.save()
+
+            messages.success(request, "Профіль успішно оновлено!")
+            return redirect("accounts:profile")
+        else:
+            for field, errors in profile_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{profile_form.fields[field].label if field in profile_form.fields else field}: {error}")
+
+        return render(request, self.template_name, {"profile_form": profile_form})

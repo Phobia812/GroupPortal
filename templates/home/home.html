@@ -1,61 +1,170 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Головна</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Портал групи</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-50 text-gray-800">
 
-<div class="bg-white p-8 rounded-2xl shadow-2xl border border-blue-100 w-full max-w-lg text-center">
-
-    {% if user.is_authenticated %}
-        <h1 class="text-3xl font-bold mb-4">Ласкаво просимо, {{ user.username }}!</h1>
-
-        {% if profile %}
-            <p class="text-gray-700 mb-2"><strong>Роль:</strong> {{ user.get_role_display }}</p>
-            <p class="text-gray-700 mb-2"><strong>Ім'я:</strong> {{ profile.first_name }}</p>
-            <p class="text-gray-700 mb-2"><strong>Прізвище:</strong> {{ profile.last_name }}</p>
-            <p class="text-gray-700 mb-2"><strong>Дата народження:</strong> {{ profile.birth_date }}</p>
-            {% if profile.age %}
-                <p class="text-gray-700 mb-2"><strong>Вік:</strong> {{ profile.age }}</p>
-            {% endif %}
-            {% if profile.avatar %}
-                <div class="my-4">
-                    <img src="{{ profile.avatar.url }}" alt="Аватар" class="mx-auto rounded-full w-32 h-32 object-cover">
-                </div>
-            {% endif %}
-            {% if profile.bio %}
-                <p class="text-gray-600 mt-4">{{ profile.bio }}</p>
-            {% endif %}
+  <!-- Header -->
+  <header class="bg-blue-600 text-white shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <h1 class="text-2xl font-bold">Портал групи</h1>
+      <div>
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:profile' %}">
+            <img src="{% if userprofile.avatar %}{{ userprofile.avatar.url }}{% else %}{% static 'avatars/default.jpg' %}{% endif %}" 
+                alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow hover:ring-2 hover:ring-blue-300 transition cursor-pointer">
+          </a>
         {% else %}
-            <p class="text-gray-600">Профіль ще не заповнений.</p>
+          <a href="{% url 'accounts:login' %}" class="bg-white text-blue-600 px-4 py-2 rounded shadow hover:bg-gray-100 transition">Увійти</a>
+          <a href="{% url 'accounts:register' %}" class="bg-white text-blue-600 px-4 py-2 rounded shadow hover:bg-gray-100 transition ml-2">Реєстрація</a>
         {% endif %}
+      </div>
+    </div>
+  </header>
 
-        <div class="mt-6">
-            <a href="{% url 'logout' %}" class="text-white bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition-colors">
-                Вийти
-            </a>
+  <!-- Інформація -->
+  <section class="bg-blue-100 py-8">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-blue-700 mb-2">Ласкаво просимо до порталу групи!</h2>
+        <p class="text-lg text-gray-700 mb-2">
+          Тут ви знайдете новини, форум, електронний щоденник, події та багато іншого.
+        </p>
+        <div class="bg-white rounded-xl shadow p-4 inline-block mt-4">
+          <h3 class="text-lg font-semibold text-blue-600 mb-1">Інформація про групу</h3>
+          {% if group_info %}
+            <p class="text-gray-700 text-sm">
+              <span class="font-semibold">Група:</span> {{ group_info.group_name }}<br>
+              <span class="font-semibold">Куратор:</span> {{ group_info.curator }}<br>
+              <span class="font-semibold">Кількість студентів:</span> {{ group_info.student_count }}
+            </p>
+          {% else %}
+            <p class="text-gray-700 text-sm">
+              Інформація про групу наразі відсутня.
+            </p>
+          {% endif %}
         </div>
+      </div>
+  </section>
 
-    {% else %}
-        <h1 class="text-3xl font-bold mb-4">Ласкаво просимо!</h1>
-        <p class="text-gray-600 mb-6">Будь ласка, увійдіть або зареєструйтесь, щоб продовжити.</p>
+  <!-- Відображення віджетів -->
+  <main class="max-w-7xl mx-auto py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
 
-        <div class="flex justify-center gap-4">
-            <a href="{% url 'login' %}" 
-            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md">
-                Увійти
-            </a>
-            <a href="{% url 'register' %}" 
-            class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors shadow-md">
-                Зареєструватися
-            </a>
-        </div>
-    {% endif %}
+    <!-- Новини -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Новини</h3>
+      <ul class="space-y-2 text-gray-700">
+        {% for news in news_list %}
+          <li>📌 {{ news.title }}</li>
+        {% empty %}
+          <li>📌 Початок нового семестру</li>
+          <li>📌 Зустріч з викладачами у п’ятницю</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'announcements:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Більше новин →</a>
+    </div>
 
-</div>
+    <!-- Форум -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Форум</h3>
+      <ul class="space-y-2 text-gray-700">
+        {% for topic in forum_topics %}
+          <li>💬 {{ topic.title }}</li>
+        {% empty %}
+          <li>💬 Обговорення курсової роботи</li>
+          <li>💬 Питання по лабораторним</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'forum:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Перейти на форум →</a>
+    </div>
+
+    <!-- Щоденник -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Останні оцінки</h3>
+      {% if user.is_authenticated %}
+        {% if recent_grades %}
+          <div class="space-y-2">
+            {% for grade in recent_grades %}
+              <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                <div>
+                  <span class="text-gray-700 font-medium">{{ grade.subject.name }}</span>
+                  <span class="text-gray-400 text-xs block">{{ grade.date|date:"d.m.Y" }}</span>
+                </div>
+                <span class="font-bold text-xl {% if grade.grade >= 9 %}text-green-600{% elif grade.grade >= 6 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                  {{ grade.grade }}
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-gray-500 text-sm">Оцінок поки немає</p>
+        {% endif %}
+      {% else %}
+        <p class="text-gray-500 text-sm">Увійдіть, щоб побачити оцінки</p>
+      {% endif %}
+      <a href="{% url 'diary:grade_list' %}" class="text-blue-500 hover:underline text-sm mt-3 block">До щоденника →</a>
+    </div>
+
+    <!-- Події -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Події</h3>
+      <ul class="space-y-2 text-gray-700">
+        {% for event in events %}
+          <li>📅 {{ event.date|date:"d.m" }} — {{ event.title }}</li>
+        {% empty %}
+          <li>📅 12.10 — Воркшоп з Django</li>
+          <li>📅 20.10 — Спортивний турнір</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'events:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Календар подій →</a>
+    </div>
+
+    <!-- Оголошення -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Оголошення</h3>
+      <ul class="space-y-2 text-gray-700">
+        {% for announcement in announcements %}
+          <li>📢 {{ announcement.title }}</li>
+        {% empty %}
+          <li>📢 Здача робіт до 15.10</li>
+          <li>📢 Важлива інформація для студентів</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'announcements:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Переглянути всі →</a>
+    </div>
+
+    <!-- Матеріали -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Матеріали</h3>
+      <ul class="space-y-2 text-gray-700">
+        {% for material in materials %}
+          <li>📂 {{ material.title }}</li>
+        {% empty %}
+          <li>📂 Конспект з математики</li>
+          <li>🎥 Лекція з YouTube</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'materials:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">До матеріалів →</a>
+    </div>
+
+    <!-- Опитування -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h3 class="text-xl font-semibold text-blue-600 mb-3">Опитування</h3>
+      <ul class="space-y-2 text-gray-700">
+        {% for poll in polls %}
+          <li>🗳️ {{ poll.question }}</li>
+        {% empty %}
+          <li>🗳️ Який предмет найцікавіший?</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'polls:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Всі опитування →</a>
+    </div>
+
+  </main>
 
 </body>
 </html>

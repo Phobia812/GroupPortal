@@ -1,9 +1,12 @@
 from django.urls import path
-from . import views
+from .views import logout_view, RegisterView, LoginView, ActivateView, ProfileView
+
+app_name = "accounts"
 
 urlpatterns = [
-    path('register/', views.register_view, name='register'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('activate/<uidb64>/<token>/', views.activate_view, name='activate'),
+    path("register/", RegisterView.as_view(), name="register"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", logout_view, name="logout"),
+    path("activate/<uidb64>/<token>/", ActivateView.as_view(), name="activate"),
+    path("profile/", ProfileView.as_view(), name="profile"),
 ]

@@ -16,7 +16,7 @@ class Grade(models.Model):
     date = models.DateField(default=timezone.now)
 
     class Meta:
-        unique_together = ('student', 'subject', 'date')
+        unique_together = ('student', 'subject', 'date', 'detail')
         ordering = ['-date']
 
     def __str__(self):

@@ -1,9 +1,16 @@
 from django.urls import path
-from . import views
+from .views import (
+    GradeListView,
+    GradeCreateView,
+    GradeUpdateView,
+    GradeDeleteView,
+)
+
+app_name = "diary"
 
 urlpatterns = [
-    path("", views.grade_list, name="grade_list"),
-    path("create/", views.grade_add, name="grade_add"),
-    path("update/<int:pk>/", views.grade_update, name="grade_update"),
-    path("delete/<int:pk>/", views.grade_delete, name="grade_delete"),
+    path('', GradeListView.as_view(), name='grade_list'),
+    path('create/', GradeCreateView.as_view(), name='grade_add'),
+    path('<int:pk>/edit/', GradeUpdateView.as_view(), name='grade_update'),
+    path('<int:pk>/delete/', GradeDeleteView.as_view(), name='grade_delete'),
 ]
