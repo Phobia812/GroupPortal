@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Видалити подію - Портал групи</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <header class="bg-blue-600 text-white shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <h1 class="text-2xl font-bold">
+        <a href="{% url 'home:home' %}" class="hover:text-blue-200 transition">Портал групи</a>
+      </h1>
+      <div class="flex items-center gap-4">
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:profile' %}">
+            <img src="{% if user.userprofile.avatar %}{{ user.userprofile.avatar.url }}{% else %}{% static 'avatars/default.jpg' %}{% endif %}" 
+                alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow hover:ring-2 hover:ring-blue-300 transition cursor-pointer">
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <section class="bg-red-100 py-8">
+    <div class="max-w-5xl mx-auto px-4">
+      <a href="{% url 'events:list' %}" class="text-red-600 hover:text-red-800 font-medium flex items-center gap-2 mb-4">
+        ← Назад до подій
+      </a>
+      <h2 class="text-3xl font-bold text-red-700">🗑️ Підтвердження видалення</h2>
+    </div>
+  </section>
+
+  <main class="max-w-5xl mx-auto py-10 px-4">
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+      
+      <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-6 rounded">
+        <div class="flex items-start gap-4">
+          <div class="text-3xl">⚠️</div>
+          <div>
+            <h3 class="text-xl font-semibold text-red-800 mb-2">Ви впевнені, що хочете видалити цю подію?</h3>
+            <p class="text-red-700">Ця дія незворотна і видалить всю інформацію про подію.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 rounded-xl p-6 mb-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-blue-100 rounded-lg p-3 text-center min-w-[70px]">
+            <div class="text-2xl font-bold text-blue-600">{{ event.start_date|date:"d" }}</div>
+            <div class="text-sm text-gray-600">{{ event.start_date|date:"M" }}</div>
+          </div>
+          <div class="flex-1">
+            <h4 class="text-xl font-semibold text-gray-800 mb-2">{{ event.title }}</h4>
+            <div class="space-y-1 text-sm text-gray-600">
+              <div class="flex items-center gap-2">
+                <span>🕐</span>
+                <span>{{ event.start_date|date:"d.m.Y H:i" }}</span>
+                {% if event.end_date %}
+                  <span>—</span>
+                  <span>{{ event.end_date|date:"d.m.Y H:i" }}</span>
+                {% endif %}
+              </div>
+              {% if event.location %}
+                <div class="flex items-center gap-2">
+                  <span>📍</span>
+                  <span>{{ event.location }}</span>
+                </div>
+              {% endif %}
+            </div>
+            {% if event.description %}
+              <p class="text-gray-700 mt-3">{{ event.description|truncatewords:30 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <form method="post" class="flex gap-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 text-white px-8 py-3 rounded-lg shadow hover:bg-red-700 transition font-semibold">
+          🗑️ Так, видалити подію
+        </button>
+        <a href="{% url 'events:detail' event.pk %}" class="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg shadow hover:bg-gray-300 transition font-semibold">
+          Скасувати
+        </a>
+      </form>
+
+    </div>
+  </main>
+
+</body>
+</html>

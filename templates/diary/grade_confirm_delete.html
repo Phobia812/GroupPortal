@@ -5,41 +5,261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Видалити оцінку</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'blue-custom': '#1e40af',
-                        'blue-light': '#3b82f6',
-                        'blue-lighter': '#dbeafe'
-                    }
-                }
-            }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      * {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+      }
+
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+      }
+
+      .delete-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #ef4444;
+        animation: slideUp 0.6s ease-out;
+        max-width: 500px;
+        width: 100%;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
         }
-    </script>
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .delete-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+
+      .delete-icon i {
+        font-size: 28px;
+        color: #ef4444;
+      }
+
+      .delete-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 12px;
+      }
+
+      .delete-message {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+
+      .grade-info {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+        border: 1px solid #fca5a5;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 24px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .info-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-label {
+        color: #9ca3af;
+        font-weight: 600;
+      }
+
+      .info-value {
+        color: #1f2937;
+        font-weight: 600;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+      }
+
+      .btn-delete {
+        flex: 1;
+        padding: 12px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+      }
+
+      .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+      }
+
+      .btn-cancel {
+        flex: 1;
+        padding: 12px;
+        background: #f3f4f6;
+        color: #374151;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-cancel:hover {
+        background: #e5e7eb;
+        transform: translateY(-2px);
+      }
+
+      header {
+        padding: 16px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      header a {
+        color: white;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      header a:hover {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .header-icon {
+        font-size: 20px;
+        margin-right: 8px;
+      }
+
+      @media (max-width: 640px) {
+        .delete-card {
+          padding: 24px;
+        }
+
+        .delete-title {
+          font-size: 20px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+      }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen p-4 flex justify-center items-start">
+<body>
 
-<div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-red-200 mt-16">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">Видалити оцінку</h2>
-    <p class="mb-6 text-gray-700">
-        Ви впевнені, що хочете видалити оцінку <strong>{{ grade.grade }}</strong> з предмету 
-        <strong>{{ grade.subject.name }}</strong> для учня 
-        <strong>{{ grade.student.first_name }} {{ grade.student.last_name }}</strong>?
-    </p>
+  <header class="text-white shadow-xl">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <a href="{% url 'diary:grade_list' %}" class="text-2xl font-bold">
+        <i class="fas fa-book header-icon"></i>Оцінки
+      </a>
+      <a href="{% url 'diary:grade_list' %}" class="bg-white/20 px-4 py-2 rounded-lg border border-white font-semibold hover:bg-white/30 transition flex items-center gap-2">
+        <i class="fas fa-arrow-left"></i> Назад
+      </a>
+    </div>
+  </header>
 
-    <form method="POST" class="space-y-4">
+  <main class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="delete-card">
+
+      <div class="delete-icon">
+        <i class="fas fa-trash-alt"></i>
+      </div>
+
+      <h2 class="delete-title">Видалити оцінку?</h2>
+      
+      <p class="delete-message">
+        Ви впевнені, що хочете видалити цю оцінку? Цю дію неможливо відмінити.
+      </p>
+
+      <div class="grade-info">
+        <div class="info-row">
+          <span class="info-label">
+            <i class="fas fa-user"></i> Учень:
+          </span>
+          <span class="info-value">{{ grade.student.first_name }} {{ grade.student.last_name }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="fas fa-book"></i> Предмет:
+          </span>
+          <span class="info-value">{{ grade.subject.name }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="fas fa-star"></i> Оцінка:
+          </span>
+          <span class="info-value">{{ grade.grade }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="fas fa-calendar"></i> Дата:
+          </span>
+          <span class="info-value">{{ grade.date|date:"d.m.Y" }}</span>
+        </div>
+      </div>
+
+      <form method="POST" class="space-y-0">
         {% csrf_token %}
-        <button type="submit" 
-                class="w-full bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300 font-semibold">
+        
+        <div class="button-group">
+          <button type="submit" class="btn-delete">
+            <i class="fas fa-trash-alt"></i>
             Видалити
-        </button>
-        <a href="{% url 'grade_list' %}" 
-           class="w-full block text-center bg-gray-200 text-gray-800 py-3 px-6 rounded-lg hover:bg-gray-300 transition-all duration-300">
+          </button>
+          <a href="{% url 'diary:grade_list' %}" class="btn-cancel">
+            <i class="fas fa-times"></i>
             Скасувати
-        </a>
-    </form>
-</div>
+          </a>
+        </div>
+      </form>
+
+    </div>
+  </main>
+
 </body>
 </html>

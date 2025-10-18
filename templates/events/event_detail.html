@@ -1,0 +1,399 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ event.title }} - Портал групи</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    }
+
+    .detail-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .event-date-box {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .event-date-day {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .event-date-month {
+      font-size: 12px;
+      color: #9ca3af;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .event-title-section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+
+    .event-meta {
+      color: #9ca3af;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .event-meta i {
+      color: #667eea;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-action {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-edit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-delete:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+    }
+
+    .info-section {
+      margin-bottom: 28px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .info-icon {
+      font-size: 24px;
+      color: #667eea;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .info-content {
+      flex: 1;
+    }
+
+    .info-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    .description-section {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+
+    .description-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .description-text {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .footer-info {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 13px;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #e5e7eb;
+    }
+
+    .footer-info-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    header {
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    header a:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .header-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: #764ba2;
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .detail-card {
+        padding: 20px;
+      }
+
+      .event-header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .event-title-section h2 {
+        font-size: 22px;
+      }
+
+      .action-buttons {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .btn-action {
+        justify-content: center;
+      }
+
+      .footer-info {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="text-white shadow-xl">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <div>
+        <h1 class="text-3xl font-bold">
+          <i class="fas fa-calendar-alt header-icon"></i>Події групи
+        </h1>
+        <p class="text-sm text-white/80 mt-1">Календар подій, заходів та важливих дат</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="{% url 'events:list' %}" class="bg-white/20 px-4 py-2 rounded-lg border border-white font-semibold hover:bg-white/30 transition flex items-center gap-2">
+          <i class="fas fa-arrow-left"></i> Назад
+        </a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:profile' %}">
+            <img src="{% if user.userprofile.avatar %}{{ user.userprofile.avatar.url }}{% else %}{% static 'avatars/default.jpg' %}{% endif %}"
+                 alt="Avatar" class="w-12 h-12 rounded-full border-3 border-white shadow-lg hover:scale-110 transition cursor-pointer">
+          </a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold">Увійти</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto py-12 px-4">
+    <div class="detail-card">
+
+      <div class="event-header">
+        <div style="display: flex; align-items: flex-start; gap: 20px;">
+          <div class="event-date-box">
+            <div class="event-date-day">{{ event.start_date|date:"d" }}</div>
+            <div class="event-date-month">{{ event.start_date|date:"M Y" }}</div>
+          </div>
+          <div class="event-title-section">
+            <h2>{{ event.title }}</h2>
+            <div class="event-meta">
+              <i class="fas fa-user"></i>
+              <span>{{ event.created_by.get_full_name|default:event.created_by.username }}</span>
+            </div>
+          </div>
+        </div>
+
+        {% if user.is_moderator or user.is_admin %}
+          <div class="action-buttons">
+            <a href="{% url 'events:edit' event.pk %}" class="btn-action btn-edit">
+              <i class="fas fa-edit"></i>
+              Редагувати
+            </a>
+            <a href="{% url 'events:delete' event.pk %}" class="btn-action btn-delete">
+              <i class="fas fa-trash"></i>
+              Видалити
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="info-section">
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Час проведення</div>
+            <div class="info-value">
+              Початок: {{ event.start_date|date:"d.m.Y о H:i" }}
+              {% if event.end_date %}
+                <br>Кінець: {{ event.end_date|date:"d.m.Y о H:i" }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {% if event.location %}
+          <div class="info-item">
+            <div class="info-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="info-content">
+              <div class="info-label">Місце проведення</div>
+              <div class="info-value">{{ event.location }}</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if event.description %}
+        <div class="description-section">
+          <div class="description-title">
+            <i class="fas fa-file-alt"></i>
+            Опис події
+          </div>
+          <div class="description-text">{{ event.description }}</div>
+        </div>
+      {% endif %}
+
+      <div class="footer-info">
+        <div class="footer-info-item">
+          <i class="fas fa-user-circle"></i>
+          <span>Додав: {{ event.created_by.get_full_name|default:event.created_by.username }}</span>
+        </div>
+        <div class="footer-info-item">
+          <i class="fas fa-calendar"></i>
+          <span>{{ event.start_date|date:"d.m.Y" }}</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

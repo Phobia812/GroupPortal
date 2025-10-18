@@ -6,164 +6,430 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Портал групи</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
 
-  <!-- Header -->
-  <header class="bg-blue-600 text-white shadow-md">
-    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-2xl font-bold">Портал групи</h1>
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      font-size: 24px;
+      color: #667eea;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .list-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-item:hover {
+      padding-left: 8px;
+      color: #667eea;
+    }
+
+    .list-icon {
+      color: #667eea;
+      width: 16px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .cta-link {
+      display: inline-block;
+      margin-top: 16px;
+      color: #667eea;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+
+    .cta-link:hover {
+      gap: 6px;
+      transform: translateX(4px);
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .hero-content {
+      animation: slideInDown 0.6s ease-out;
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+    .card:nth-child(6) { animation-delay: 0.6s; }
+    .card:nth-child(7) { animation-delay: 0.7s; }
+
+    .grade-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .grade-item:hover {
+      background: #f0f0f0;
+    }
+
+    .grade-badge {
+      font-weight: 700;
+      font-size: 18px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
+    }
+
+    .grade-excellent { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .grade-good { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .grade-fair { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .grade-poor { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+    .info-box {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border-left: 4px solid #667eea;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+
+    .avatar-link:hover {
+      transform: scale(1.1);
+    }
+
+    .avatar-link {
+      transition: transform 0.3s ease;
+    }
+
+    .header-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="text-white shadow-xl">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-6">
       <div>
+        <h1 class="text-3xl font-bold">
+          <i class="fas fa-book header-icon"></i>Портал групи
+        </h1>
+        <p class="text-sm text-white/80 mt-1">Ваш центр навчання</p>
+      </div>
+      <div class="flex items-center gap-4">
         {% if user.is_authenticated %}
-          <a href="{% url 'accounts:profile' %}">
+          <a href="{% url 'accounts:profile' %}" class="avatar-link">
             <img src="{% if userprofile.avatar %}{{ userprofile.avatar.url }}{% else %}{% static 'avatars/default.jpg' %}{% endif %}" 
-                alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow hover:ring-2 hover:ring-blue-300 transition cursor-pointer">
+                alt="Avatar" class="w-12 h-12 rounded-full border-3 border-white shadow-lg">
           </a>
         {% else %}
-          <a href="{% url 'accounts:login' %}" class="bg-white text-blue-600 px-4 py-2 rounded shadow hover:bg-gray-100 transition">Увійти</a>
-          <a href="{% url 'accounts:register' %}" class="bg-white text-blue-600 px-4 py-2 rounded shadow hover:bg-gray-100 transition ml-2">Реєстрація</a>
+          <div class="flex gap-3">
+            <a href="{% url 'accounts:login' %}" class="bg-white text-purple-600 px-6 py-2 rounded-lg shadow font-semibold hover:shadow-lg transition">Увійти</a>
+            <a href="{% url 'accounts:register' %}" class="bg-white/20 text-white px-6 py-2 rounded-lg border border-white font-semibold hover:bg-white/30 transition">Реєстрація</a>
+          </div>
         {% endif %}
       </div>
     </div>
   </header>
 
-  <!-- Інформація -->
-  <section class="bg-blue-100 py-8">
-      <div class="max-w-5xl mx-auto text-center">
-        <h2 class="text-3xl font-bold text-blue-700 mb-2">Ласкаво просимо до порталу групи!</h2>
-        <p class="text-lg text-gray-700 mb-2">
-          Тут ви знайдете новини, форум, електронний щоденник, події та багато іншого.
+  <section class="hero py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="hero-content text-center">
+        <h2 class="text-4xl md:text-5xl font-bold gradient-text mb-3">
+          <i class="fas fa-hand"></i> Ласкаво просимо!
+        </h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
+          Усе, що вам потрібно для успішного навчання — новини, форум, оцінки, календар подій та навчальні матеріали у одному місці.
         </p>
-        <div class="bg-white rounded-xl shadow p-4 inline-block mt-4">
-          <h3 class="text-lg font-semibold text-blue-600 mb-1">Інформація про групу</h3>
-          {% if group_info %}
-            <p class="text-gray-700 text-sm">
-              <span class="font-semibold">Група:</span> {{ group_info.group_name }}<br>
-              <span class="font-semibold">Куратор:</span> {{ group_info.curator }}<br>
-              <span class="font-semibold">Кількість студентів:</span> {{ group_info.student_count }}
-            </p>
-          {% else %}
-            <p class="text-gray-700 text-sm">
-              Інформація про групу наразі відсутня.
-            </p>
-          {% endif %}
-        </div>
+        
+        {% if group_info %}
+          <div class="info-box max-w-2xl mx-auto">
+            <div class="grid grid-cols-3 gap-6 text-center">
+              <div>
+                <p class="text-sm text-gray-600 mb-1">
+                  <i class="fas fa-users text-purple-600"></i> Група
+                </p>
+                <p class="text-xl font-bold text-gray-800">{{ group_info.group_name }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600 mb-1">
+                  <i class="fas fa-user-tie text-purple-600"></i> Куратор
+                </p>
+                <p class="text-xl font-bold text-gray-800">{{ group_info.curator }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600 mb-1">
+                  <i class="fas fa-graduation-cap text-purple-600"></i> Студентів
+                </p>
+                <p class="text-xl font-bold text-gray-800">{{ group_info.student_count }}</p>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       </div>
+    </div>
   </section>
 
-  <!-- Відображення віджетів -->
-  <main class="max-w-7xl mx-auto py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+  <main class="max-w-7xl mx-auto py-12 px-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-    <!-- Новини -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Новини</h3>
-      <ul class="space-y-2 text-gray-700">
-        {% for news in news_list %}
-          <li>📌 {{ news.title }}</li>
-        {% empty %}
-          <li>📌 Початок нового семестру</li>
-          <li>📌 Зустріч з викладачами у п’ятницю</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'announcements:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Більше новин →</a>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-newspaper card-icon"></i>
+          <h3 class="card-title">Новини</h3>
+        </div>
+        <div class="space-y-2">
+          {% for news in news_list %}
+            <div class="list-item">
+              <i class="fas fa-bookmark list-icon"></i>
+              <span>{{ news.title }}</span>
+            </div>
+          {% empty %}
+            <div class="list-item"><i class="fas fa-bookmark list-icon"></i> <span>Початок нового семестру</span></div>
+            <div class="list-item"><i class="fas fa-bookmark list-icon"></i> <span>Зустріч з викладачами у п'ятницю</span></div>
+          {% endfor %}
+        </div>
+        <a href="{% url 'announcements:index' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> Більше новин
+        </a>
+      </div>
 
-    <!-- Форум -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Форум</h3>
-      <ul class="space-y-2 text-gray-700">
-        {% for topic in forum_topics %}
-          <li>💬 {{ topic.title }}</li>
-        {% empty %}
-          <li>💬 Обговорення курсової роботи</li>
-          <li>💬 Питання по лабораторним</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'forum:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Перейти на форум →</a>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-comments card-icon"></i>
+          <h3 class="card-title">Форум</h3>
+        </div>
+        <div class="space-y-2">
+          {% for topic in forum_topics %}
+            <div class="list-item">
+              <i class="fas fa-comment list-icon"></i>
+              <span>{{ topic.title }}</span>
+            </div>
+          {% empty %}
+            <div class="list-item"><i class="fas fa-comment list-icon"></i> <span>Обговорення курсової роботи</span></div>
+            <div class="list-item"><i class="fas fa-comment list-icon"></i> <span>Питання по лабораторним</span></div>
+          {% endfor %}
+        </div>
+        <a href="{% url 'forum:index' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> Перейти на форум
+        </a>
+      </div>
 
-    <!-- Щоденник -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Останні оцінки</h3>
-      {% if user.is_authenticated %}
-        {% if recent_grades %}
-          <div class="space-y-2">
-            {% for grade in recent_grades %}
-              <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                <div>
-                  <span class="text-gray-700 font-medium">{{ grade.subject.name }}</span>
-                  <span class="text-gray-400 text-xs block">{{ grade.date|date:"d.m.Y" }}</span>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-chart-bar card-icon"></i>
+          <h3 class="card-title">Останні оцінки</h3>
+        </div>
+        {% if user.is_authenticated %}
+          {% if recent_grades %}
+            <div class="space-y-2">
+              {% for grade in recent_grades %}
+                <div class="grade-item">
+                  <div>
+                    <p class="text-gray-800 font-semibold text-sm">{{ grade.subject.name }}</p>
+                    <p class="text-gray-400 text-xs">{{ grade.date|date:"d.m.Y" }}</p>
+                  </div>
+                  <span class="grade-badge {% if grade.grade >= 9 %}grade-excellent{% elif grade.grade >= 7 %}grade-good{% elif grade.grade >= 5 %}grade-fair{% else %}grade-poor{% endif %}">
+                    {{ grade.grade }}
+                  </span>
                 </div>
-                <span class="font-bold text-xl {% if grade.grade >= 9 %}text-green-600{% elif grade.grade >= 6 %}text-yellow-600{% else %}text-red-600{% endif %}">
-                  {{ grade.grade }}
-                </span>
-              </div>
-            {% endfor %}
-          </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-gray-500 text-sm text-center py-6">Оцінок поки немає</p>
+          {% endif %}
         {% else %}
-          <p class="text-gray-500 text-sm">Оцінок поки немає</p>
+          <p class="text-gray-500 text-sm text-center py-6">Увійдіть, щоб побачити оцінки</p>
         {% endif %}
-      {% else %}
-        <p class="text-gray-500 text-sm">Увійдіть, щоб побачити оцінки</p>
-      {% endif %}
-      <a href="{% url 'diary:grade_list' %}" class="text-blue-500 hover:underline text-sm mt-3 block">До щоденника →</a>
-    </div>
+        <a href="{% url 'diary:grade_list' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> До щоденника
+        </a>
+      </div>
 
-    <!-- Події -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Події</h3>
-      <ul class="space-y-2 text-gray-700">
-        {% for event in events %}
-          <li>📅 {{ event.date|date:"d.m" }} — {{ event.title }}</li>
-        {% empty %}
-          <li>📅 12.10 — Воркшоп з Django</li>
-          <li>📅 20.10 — Спортивний турнір</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'events:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Календар подій →</a>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-calendar card-icon"></i>
+          <h3 class="card-title">Події</h3>
+        </div>
+        <div class="space-y-2">
+          {% for event in events %}
+            <div class="list-item">
+              <i class="fas fa-circle-check list-icon"></i>
+              <a href="{% url 'events:detail' event.pk %}" class="hover:text-purple-600 transition">
+                <span>{{ event.start_date|date:"d.m" }}</span> — {{ event.title }}
+              </a>
+            </div>
+          {% empty %}
+            <div class="text-center py-6 text-gray-500 text-sm">Подій поки немає</div>
+          {% endfor %}
+        </div>
+        <a href="{% url 'events:list' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> Календар подій
+        </a>
+      </div>
 
-    <!-- Оголошення -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Оголошення</h3>
-      <ul class="space-y-2 text-gray-700">
-        {% for announcement in announcements %}
-          <li>📢 {{ announcement.title }}</li>
-        {% empty %}
-          <li>📢 Здача робіт до 15.10</li>
-          <li>📢 Важлива інформація для студентів</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'announcements:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Переглянути всі →</a>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-bell card-icon"></i>
+          <h3 class="card-title">Оголошення</h3>
+        </div>
+        <div class="space-y-2">
+          {% for announcement in announcements %}
+            <div class="list-item">
+              <i class="fas fa-bolt list-icon"></i>
+              <span>{{ announcement.title }}</span>
+            </div>
+          {% empty %}
+            <div class="list-item"><i class="fas fa-bolt list-icon"></i> <span>Здача робіт до 15.10</span></div>
+            <div class="list-item"><i class="fas fa-bolt list-icon"></i> <span>Важлива інформація для студентів</span></div>
+          {% endfor %}
+        </div>
+        <a href="{% url 'announcements:index' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> Переглянути всі
+        </a>
+      </div>
 
-    <!-- Матеріали -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Матеріали</h3>
-      <ul class="space-y-2 text-gray-700">
-        {% for material in materials %}
-          <li>📂 {{ material.title }}</li>
-        {% empty %}
-          <li>📂 Конспект з математики</li>
-          <li>🎥 Лекція з YouTube</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'materials:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">До матеріалів →</a>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-folder card-icon"></i>
+          <h3 class="card-title">Матеріали</h3>
+        </div>
+        <div class="space-y-2">
+          {% for material in materials %}
+            <div class="list-item">
+              <i class="fas fa-file-alt list-icon"></i>
+              <span>{{ material.title }}</span>
+            </div>
+          {% empty %}
+            <div class="list-item"><i class="fas fa-file-alt list-icon"></i> <span>Конспект з математики</span></div>
+            <div class="list-item"><i class="fas fa-video list-icon"></i> <span>Лекція з YouTube</span></div>
+          {% endfor %}
+        </div>
+        <a href="{% url 'materials:index' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> До матеріалів
+        </a>
+      </div>
 
-    <!-- Опитування -->
-    <div class="bg-white rounded-2xl shadow p-6">
-      <h3 class="text-xl font-semibold text-blue-600 mb-3">Опитування</h3>
-      <ul class="space-y-2 text-gray-700">
-        {% for poll in polls %}
-          <li>🗳️ {{ poll.question }}</li>
-        {% empty %}
-          <li>🗳️ Який предмет найцікавіший?</li>
-        {% endfor %}
-      </ul>
-      <a href="{% url 'polls:index' %}" class="text-blue-500 hover:underline text-sm mt-3 block">Всі опитування →</a>
-    </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-poll card-icon"></i>
+          <h3 class="card-title">Опитування</h3>
+        </div>
+        <div class="space-y-2">
+          {% for poll in polls %}
+            <div class="list-item">
+              <i class="fas fa-check-circle list-icon"></i>
+              <span>{{ poll.question }}</span>
+            </div>
+          {% empty %}
+            <div class="list-item"><i class="fas fa-check-circle list-icon"></i> <span>Який предмет найцікавіший?</span></div>
+          {% endfor %}
+        </div>
+        <a href="{% url 'polls:index' %}" class="cta-link">
+          <i class="fas fa-arrow-right"></i> Всі опитування
+        </a>
+      </div>
 
+    </div>
   </main>
 
 </body>

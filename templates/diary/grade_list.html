@@ -1,71 +1,336 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Електронний щоденник</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'blue-custom': '#1e40af',
-                        'blue-light': '#3b82f6',
-                        'blue-lighter': '#dbeafe'
-                    }
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Електронний щоденник - Портал групи</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      color: #6b7280;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .table-wrapper {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e5e7eb;
+      transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+    }
+
+    td {
+      padding: 16px;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .grade-cell {
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .action-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-link {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .action-edit {
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .action-edit:hover {
+      background: rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .action-delete {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .action-delete:hover {
+      background: rgba(239, 68, 68, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .empty-state {
+      background: white;
+      border-radius: 16px;
+      padding: 48px 24px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .empty-text {
+      color: #9ca3af;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .avatar-link {
+      transition: transform 0.3s ease;
+    }
+
+    .avatar-link:hover {
+      transform: scale(1.1);
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    header a:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .header-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 24px;
+      }
+
+      .hero-subtitle {
+        font-size: 14px;
+      }
+
+      .table-wrapper {
+        padding: 16px;
+      }
+
+      th, td {
+        padding: 12px 8px;
+        font-size: 13px;
+      }
+
+      .action-links {
+        flex-direction: column;
+      }
+
+      .action-link {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen p-4 flex justify-center">
+<body>
 
-<div class="w-full max-w-5xl bg-white p-6 rounded-2xl shadow-lg border border-blue-lighter">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Електронний щоденник</h1>
-
-    <table class="w-full border-collapse border border-gray-200">
-        <thead class="bg-blue-lighter">
-            <tr>
-                <th class="border px-4 py-2 text-left">Учень</th>
-                <th class="border px-4 py-2 text-left">Предмет</th>
-                <th class="border px-4 py-2 text-left">Оцінка</th>
-                <th class="border px-4 py-2 text-left">Деталі</th>
-                <th class="border px-4 py-2 text-left">Дата</th>
-                {% if user.is_admin or user.is_moderator %}
-                    <th class="border px-4 py-2 text-left">Дії</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for grade in grades %}
-            <tr class="hover:bg-blue-50 transition-colors">
-                <td class="border px-4 py-2">{{ grade.student.first_name }} {{ grade.student.last_name }}</td>
-                <td class="border px-4 py-2">{{ grade.subject.name }}</td>
-                <td class="border px-4 py-2">{{ grade.grade }}</td>
-                <td class="border px-4 py-2">{{ grade.detail }}</td>
-                <td class="border px-4 py-2">{{ grade.date }}</td>
-                {% if user.is_admin or user.is_moderator %}
-                    <td class="border px-4 py-2 space-x-2">
-                        <a href="{% url 'grade_update' grade.id %}" class="text-blue-custom hover:underline">Редагувати</a>
-                        <a href="{% url 'grade_delete' grade.id %}" class="text-red-600 hover:underline">Видалити</a>
-                    </td>
-                {% endif %}
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="border px-4 py-4 text-center text-gray-500">Немає оцінок</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% if user.is_admin or user.is_moderator %}
-        <a href="{% url 'grade_add' %}" 
-           class="mt-4 inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold">
-            Додати оцінку
+  <header class="text-white shadow-xl">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-6">
+      <div>
+        <h1 class="text-3xl font-bold">
+          <i class="fas fa-book header-icon"></i>Електронний щоденник
+        </h1>
+        <p class="text-sm text-white/80 mt-1">Оцінки, предмети та досягнення студентів</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="{% url 'home:home' %}" class="bg-white/20 text-white px-4 py-2 rounded-lg border border-white font-semibold hover:bg-white/30 transition flex items-center gap-2">
+          <i class="fas fa-arrow-left"></i> Назад
         </a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:profile' %}" class="avatar-link">
+            <img src="{% if user.userprofile.avatar %}{{ user.userprofile.avatar.url }}{% else %}{% static 'avatars/default.jpg' %}{% endif %}"
+                 alt="Avatar" class="w-12 h-12 rounded-full border-3 border-white shadow-lg">
+          </a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold">Увійти</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto py-12 px-4">
+    {% if user.is_admin or user.is_moderator %}
+      <div style="margin-bottom: 24px;">
+        <a href="{% url 'diary:grade_add' %}" class="btn-primary">
+          <i class="fas fa-plus"></i> Додати оцінку
+        </a>
+      </div>
     {% endif %}
-</div>
+    
+    {% if grades %}
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <i class="fas fa-user"></i> Учень
+              </th>
+              <th>
+                <i class="fas fa-book"></i> Предмет
+              </th>
+              <th>
+                <i class="fas fa-star"></i> Оцінка
+              </th>
+              <th>
+                <i class="fas fa-info-circle"></i> Деталі
+              </th>
+              <th>
+                <i class="fas fa-calendar"></i> Дата
+              </th>
+              {% if user.is_admin or user.is_moderator %}
+                <th>
+                  <i class="fas fa-cog"></i> Дії
+                </th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for grade in grades %}
+              <tr>
+                <td>
+                  <strong>{{ grade.student.first_name }} {{ grade.student.last_name }}</strong>
+                </td>
+                <td>{{ grade.subject.name }}</td>
+                <td class="grade-cell">{{ grade.grade }}</td>
+                <td>{{ grade.detail }}</td>
+                <td>{{ grade.date|date:"d.m.Y" }}</td>
+                {% if user.is_admin or user.is_moderator %}
+                  <td>
+                    <div class="action-links">
+                      <a href="{% url 'diary:grade_update' grade.id %}" class="action-link action-edit">
+                        <i class="fas fa-edit"></i> Редагувати
+                      </a>
+                      <a href="{% url 'diary:grade_delete' grade.id %}" class="action-link action-delete">
+                        <i class="fas fa-trash"></i> Видалити
+                      </a>
+                    </div>
+                  </td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <h3 class="empty-title">Оцінок поки немає</h3>
+        <p class="empty-text">Щоденник буде оновлено, коли з'являться нові оцінки</p>
+        {% if user.is_admin or user.is_moderator %}
+          <a href="{% url 'diary:grade_add' %}" class="btn-primary">
+            <i class="fas fa-plus"></i> Додати першу оцінку
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </main>
+
 </body>
 </html>
