@@ -288,7 +288,7 @@
             <div class="list-item"><i class="fas fa-bookmark list-icon"></i> <span>Зустріч з викладачами у п'ятницю</span></div>
           {% endfor %}
         </div>
-        <a href="{% url 'announcements:index' %}" class="cta-link">
+        <a href="{% url 'announcements:list' %}" class="cta-link">
           <i class="fas fa-arrow-right"></i> Більше новин
         </a>
       </div>
@@ -369,21 +369,31 @@
 
       <div class="card">
         <div class="card-header">
-          <i class="fas fa-bell card-icon"></i>
+          <i class="fas fa-bullhorn card-icon"></i>
           <h3 class="card-title">Оголошення</h3>
         </div>
         <div class="space-y-2">
           {% for announcement in announcements %}
             <div class="list-item">
-              <i class="fas fa-bolt list-icon"></i>
-              <span>{{ announcement.title }}</span>
+              {% if announcement.is_important %}
+                <i class="fas fa-exclamation-circle list-icon" style="color: #ef4444;"></i>
+              {% else %}
+                <i class="fas fa-bullhorn list-icon"></i>
+              {% endif %}
+              <a href="{% url 'announcements:detail' announcement.pk %}" class="hover:text-purple-600 transition flex-1">
+                <span class="{% if announcement.is_important %}font-semibold text-red-600{% endif %}">
+                  {{ announcement.title|truncatewords:5 }}
+                </span>
+              </a>
             </div>
           {% empty %}
-            <div class="list-item"><i class="fas fa-bolt list-icon"></i> <span>Здача робіт до 15.10</span></div>
-            <div class="list-item"><i class="fas fa-bolt list-icon"></i> <span>Важлива інформація для студентів</span></div>
+            <div class="text-center py-6 text-gray-500 text-sm">
+              <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
+              <p>Оголошень поки немає</p>
+            </div>
           {% endfor %}
         </div>
-        <a href="{% url 'announcements:index' %}" class="cta-link">
+        <a href="{% url 'announcements:list' %}" class="cta-link">
           <i class="fas fa-arrow-right"></i> Переглянути всі
         </a>
       </div>

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from accounts.models import UserProfile
 
+from announcements.models import Announcement
 from events.models import Event
 from django.shortcuts import render
 from accounts.models import UserProfile
@@ -22,6 +23,7 @@ def home_view(request):
         recent_grades = Grade.objects.filter(student=request.user).order_by('-date')[:3]
         events = Event.objects.filter(start_date__gte=timezone.now()).order_by('start_date')[:3]
         group_info = GroupInfo.get_active_info()
+        announcements = Announcement.objects.all().order_by('-created_at')[:3]
 
     context = {
         'userprofile': userprofile,
@@ -31,7 +33,7 @@ def home_view(request):
         'forum_topics': [],
         'diary_entries': [],
         'events': events if request.user.is_authenticated else None,
-        'announcements': [],
+        'announcements': announcements if request.user.is_authenticated else None,
         'materials': [],
         'polls': [],
     }
